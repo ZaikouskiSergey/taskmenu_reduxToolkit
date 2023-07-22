@@ -1,7 +1,7 @@
 import {tasksReducer} from 'features/TodolistsList/tasks-reducer';
 import {todolistsReducer} from 'features/TodolistsList/todolists-reducer';
-import { AnyAction, applyMiddleware, combineReducers, createStore } from 'redux'
-import thunkMiddleware, { ThunkAction, ThunkDispatch } from 'redux-thunk'
+import {AnyAction, combineReducers} from 'redux'
+import {ThunkAction, ThunkDispatch} from 'redux-thunk'
 import {appReducer} from './app-reducer'
 import {authReducer} from 'features/Login/auth-reducer'
 import {configureStore} from "@reduxjs/toolkit";
@@ -20,7 +20,7 @@ export const store = configureStore({
 })
  //const store = createStore(rootReducer, applyMiddleware(thunkMiddleware));
 // определить автоматически тип всего объекта состояния
-export type AppRootStateType = ReturnType<typeof rootReducer>
+export type AppRootStateType = ReturnType<typeof store.getState>
 
 export type AppThunk<ReturnType = void> = ThunkAction<ReturnType, AppRootStateType, unknown, AnyAction>
 
