@@ -5,21 +5,16 @@ import {authActions} from "features/Login/auth-reducer";
 import {AppThunk} from "app/store";
 
 export type RequestStatusType = 'idle' | 'loading' | 'succeeded' | 'failed'
-export type InitialStateType = {
-    // происходит ли сейчас взаимодействие с сервером
-    status: RequestStatusType
-    // если ошибка какая-то глобальная произойдёт - мы запишем текст ошибки сюда
-    error: string | null
-    // true когда приложение проинициализировалось (проверили юзера, настройки получили и т.д.)
-    isInitialized: boolean
+const initialState = {
+    status: 'idle' as RequestStatusType,
+    error: null as string | null,
+    isInitialized: false
 }
+export type AppInitialStateType = typeof initialState
+
 const slice = createSlice({
     name: "app",
-    initialState: {
-        status: 'idle' as RequestStatusType,
-        error: null as string | null,
-        isInitialized: false
-    },
+    initialState,
     reducers: {
         setAppError: (state, action: PayloadAction<{ error: string | null }>) => {
             state.error = action.payload.error
@@ -27,20 +22,20 @@ const slice = createSlice({
         setAppStatus: (state, action: PayloadAction<{ status: RequestStatusType }>) => {
             state.status = action.payload.status
         },
-        setAppInitialized: (state, action: PayloadAction<{isInitialized: boolean}>)=>{
+        setAppInitialized: (state, action: PayloadAction<{ isInitialized: boolean }>) => {
             state.isInitialized = action.payload.isInitialized
         }
     },
 })
 
-export const initializeAppTC = (): AppThunk  => (dispatch: Dispatch) => {
+export const initializeAppTC = (): AppThunk => (dispatch: Dispatch) => {
     authAPI.me().then(res => {
         if (res.data.resultCode === 0) {
             dispatch(authActions.setIsLoggedIn({isLoggedIn: true}));
         } else {
 
         }
-        dispatch(appActions.setAppInitialized({isInitialized:true}));
+        dispatch(appActions.setAppInitialized({isInitialized: true}));
     })
 }
 
