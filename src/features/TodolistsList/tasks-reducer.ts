@@ -1,5 +1,4 @@
 import {TaskPriorities, TaskStatuses, TaskType, todolistsAPI, UpdateTaskModelType} from 'api/todolists-api'
-import {Dispatch} from 'redux'
 import {AppRootStateType, AppThunk} from 'app/store'
 import {handleServerAppError, handleServerNetworkError} from 'utils/error-utils'
 import {appActions} from "app/app-reducer";
@@ -27,7 +26,7 @@ const slice = createSlice({
             todolistId: string
         }>) => {
             const tasks = state[action.payload.todolistId]
-            const index = tasks.findIndex(t => t.id === action.payload.todolistId)
+            const index = tasks.findIndex(t => t.id === action.payload.taskId)
             if (index !== -1) {
                 tasks[index] = {...tasks[index], ...action.payload.model}
             }
@@ -96,7 +95,6 @@ export const updateTaskTC = (taskId: string, domainModel: UpdateDomainTaskModelT
             console.warn('task not found in the state')
             return
         }
-
         const apiModel: UpdateTaskModelType = {
             deadline: task.deadline,
             description: task.description,
