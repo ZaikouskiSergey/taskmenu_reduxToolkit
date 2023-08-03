@@ -6,12 +6,11 @@ import {
     todolistsAPI,
     UpdateTaskModelType
 } from 'api/todolists-api'
-import {AppDispatch, AppRootStateType, AppThunk} from 'app/store'
-import {handleServerAppError, handleServerNetworkError} from 'utils/error-utils'
+import {AppThunk} from 'app/store'
 import {appActions} from "app/app-reducer";
-import {createAsyncThunk, createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {todolistsActions} from "features/TodolistsList/todolists-reducer";
-import {createAppAsyncThunk} from "utils/create-app-async-thunk";
+import {createAppAsyncThunk, handleServerAppError, handleServerNetworkError} from "common/utils";
 
 const initialState: TasksStateType = {}
 
@@ -40,7 +39,6 @@ const slice = createSlice({
                 if (index !== -1) {
                     tasks[index] = {...tasks[index], ...action.payload.domainModel}
                 }
-
             })
             .addCase(todolistsActions.addTodolist, (state, action) => {
                 state[action.payload.todolist.id] = []
@@ -86,7 +84,7 @@ const addTask = createAppAsyncThunk<
     try {
         dispatch(appActions.setAppStatus({status: "loading"}))
         const res = await todolistsAPI.createTask(arg)
-        if (res.data.resultCode === 0) {
+        if (res.data.resultCode === TaskStatuses.New) {
             const task = res.data.data.item
             dispatch(appActions.setAppStatus({status: "succeeded"}))
             //dispatch(tasksActions.addTask({task}))
@@ -124,7 +122,7 @@ const updateTask = createAppAsyncThunk<
             ...arg.domainModel
         }
         const res = await todolistsAPI.updateTask(arg.todolistId, arg.taskId, apiModel)
-        if (res.data.resultCode === 0) {
+        if (res.data.resultCode === TaskStatuses.New) {
             // const action = tasksActions.updateTask({taskId, todolistId, model: domainModel})
             // dispatch(action)
             return arg

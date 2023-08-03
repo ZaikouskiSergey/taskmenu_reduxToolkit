@@ -1,10 +1,8 @@
 import {todolistsAPI, TodolistType} from 'api/todolists-api'
-import {Dispatch} from 'redux'
-import {handleServerNetworkError} from 'utils/error-utils'
 import {AppThunk} from 'app/store';
 import {appActions, RequestStatusType} from "app/app-reducer";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-
+import {handleServerNetworkError} from "common/utils/handleServerNetworkError";
 const initialState: Array<TodolistDomainType> = []
 
 const slice = createSlice({
