@@ -60,6 +60,7 @@ const fetchTasks = createAppAsyncThunk<
     try {
         dispatch(appActions.setAppStatus({status: "loading"}))
         const res = await todolistsAPI.getTasks(todolistId)
+
         const tasks = res.data.items
         dispatch(appActions.setAppStatus({status: "succeeded"}))
         return {tasks, todolistId}

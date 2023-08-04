@@ -1,5 +1,4 @@
 import {TaskStatuses, todolistsAPI, TodolistType} from 'api/todolists-api'
-import {AppThunk} from 'app/store';
 import {appActions, RequestStatusType} from "app/app-reducer";
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {handleServerNetworkError} from "common/utils/handleServerNetworkError";
@@ -121,14 +120,6 @@ const changeTodolistTitle = createAppAsyncThunk<{
     }
 })
 
-// export const changeTodolistTitleTC = (id: string, title: string): AppThunk => {
-//     return (dispatch) => {
-//         todolistsAPI.updateTodolist(id, title)
-//             .then((res) => {
-//                 dispatch(todolistsActions.changeTodolistTitle({id, title}))
-//             })
-//     }
-// }
 export const todolistsActions = slice.actions
 export const todolistsReducer = slice.reducer
 export const todolistsThunk = {fetchTodolists, removeTodolist, addTodolist, changeTodolistTitle}
