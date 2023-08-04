@@ -1,6 +1,6 @@
 import {tasksActions, tasksReducer, TasksStateType, tasksThunk, UpdateTaskArgType} from './tasks-reducer'
 import {TaskPriorities, TaskStatuses} from 'api/todolists-api'
-import {todolistsActions} from "features/TodolistsList/todolists-reducer";
+import {todolistsActions, todolistsThunk} from "features/TodolistsList/todolists-reducer";
 
 let startState: TasksStateType = {};
 beforeEach(() => {
@@ -37,7 +37,7 @@ beforeEach(() => {
 });
 
 test('correct task should be deleted from correct array', () => {
-    const action ={
+    const action = {
         type: tasksThunk.removeTask.fulfilled.type,
         payload: {taskId: "2", todolistId: "todolistId2"}
     }
@@ -78,11 +78,11 @@ test('correct task should be added to correct array', () => {
 test('status of specified task should be changed', () => {
 
     type TaskType = {
-        type: typeof  tasksThunk.updateTask.fulfilled.type
+        type: typeof tasksThunk.updateTask.fulfilled.type
         payload: UpdateTaskArgType
     }
 
-    const action:TaskType ={
+    const action: TaskType = {
         type: tasksThunk.updateTask.fulfilled.type,
         payload: {taskId: "2", domainModel: {status: TaskStatuses.New}, todolistId: "todolistId2"}
     }
@@ -94,10 +94,10 @@ test('status of specified task should be changed', () => {
 });
 test('title of specified task should be changed', () => {
     type TaskType = {
-        type: typeof  tasksThunk.updateTask.fulfilled.type
+        type: typeof tasksThunk.updateTask.fulfilled.type
         payload: UpdateTaskArgType
     }
-    const action:TaskType = {
+    const action: TaskType = {
         type: tasksThunk.updateTask.fulfilled.type,
         payload: {taskId: "2", domainModel: {title: "yogurt"}, todolistId: "todolistId2"}
     }
@@ -108,32 +108,35 @@ test('title of specified task should be changed', () => {
     expect(endState["todolistId2"][0].title).toBe("bread");
 });
 test('new array should be added when new todolist is added', () => {
-    const action = todolistsActions.addTodolist({
-        todolist: {
-            id: "blabla",
-            title: "new todolist",
-            order: 0,
-            addedDate: ''
+
+    const action = {
+        type: todolistsThunk.addTodolist.fulfilled.type,
+        payload: {
+            todolist: {
+                id: "blabla",
+                title: "new todolist",
+                order: 0,
+                addedDate: ''
+            }
         }
-    })
-
+    }
     const endState = tasksReducer(startState, action)
-
 
     const keys = Object.keys(endState);
     const newKey = keys.find(k => k != "todolistId1" && k != "todolistId2");
     if (!newKey) {
         throw Error("new key should be added")
     }
-
     expect(keys.length).toBe(3);
     expect(endState[newKey]).toEqual([]);
 });
 test('propertry with todolistId should be deleted', () => {
-    const action = todolistsActions.removeTodolist({id: "todolistId2"})
+    const action = {
+        type: todolistsThunk.removeTodolist.fulfilled.type,
+        payload: {id: "todolistId2"}
+    }
 
     const endState = tasksReducer(startState, action)
-
     const keys = Object.keys(endState);
 
     expect(keys.length).toBe(1);
@@ -141,17 +144,19 @@ test('propertry with todolistId should be deleted', () => {
 });
 
 test('empty arrays should be added when we set todolists', () => {
-    const action = todolistsActions.setTodolists({
-        todolists: [
-            {id: "1", title: "title 1", order: 0, addedDate: ""},
-            {id: "2", title: "title 2", order: 0, addedDate: ""}
-        ]
-    })
+
+    const action = {
+        type: todolistsThunk.fetchTodolists.fulfilled.type,
+        payload: {
+            todolists: [
+                {id: "1", title: "title 1", order: 0, addedDate: ""},
+                {id: "2", title: "title 2", order: 0, addedDate: ""}
+            ]
+        }
+    }
 
     const endState = tasksReducer({}, action)
-
     const keys = Object.keys(endState)
-
     expect(keys.length).toBe(2)
     expect(endState['1']).toBeDefined()
     expect(endState['2']).toBeDefined()
